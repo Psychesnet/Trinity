@@ -84,7 +84,7 @@ let s:tag_list_switch        = 0
 let s:tag_list_title         = "__Tag_List__"
 
 let s:nerd_tree_switch       = 0
-let s:nerd_tree_title        = "_NERD_tree_"
+let s:nerd_tree_title        ="_NERD_tree_"
 
 let s:source_explorer_switch = 0
 let s:source_explorer_title  = "Source_Explorer"
@@ -122,60 +122,6 @@ endfunction " }}}
 
 function! <SID>Trinity_InitSourceExplorer()
 
-    " // Set the height of Source Explorer window                                  "
-    if has("unix")
-        if has('gui_running')
-            let g:SrcExpl_winHeight = 10
-        else
-            let g:SrcExpl_winHeight = 11
-        endif
-    else
-        let g:SrcExpl_winHeight = 8
-    endif
-    " // Set 1 ms for refreshing the Source Explorer                               "
-    let g:SrcExpl_refreshTime = 1
-    " // Set "Enter" key to jump into the exact definition context                 "
-    let g:SrcExpl_jumpKey = "<ENTER>"
-    " // Set "Space" key for back from the definition context                      "
-    let g:SrcExpl_gobackKey = "<SPACE>"
-    " // In order to Avoid conflicts, the Source Explorer should know what plugins "
-    " // are using buffers. And you need add their bufname into the list below     "
-    " // according to the command ":buffers!"                                      "
-    let g:SrcExpl_pluginList = [
-        \ s:tag_list_title,
-        \ s:nerd_tree_title,
-        \ s:source_explorer_title
-    \ ]
-    " // The color schemes used by Source Explorer. There are five color schemes   "
-    " // supported for now - Red, Cyan, Green, Yellow and Magenta. Source Explorer "
-    " // will pick up one of them randomly when initialization.                    "
-     let g:SrcExpl_colorSchemeList = [
-             \ "Red",
-             \ "Cyan",
-             \ "Green",
-             \ "Yellow",
-             \ "Magenta"
-     \ ]
-    " // Enable/Disable the local definition searching, and note that this is not  "
-    " // guaranteed to work, the Source Explorer doesn't check the syntax for now. "
-    " // It only searches for a match with the keyword according to command 'gd'   "
-    let g:SrcExpl_searchLocalDef = 1
-    " // Workaround for Vim bug @https://goo.gl/TLPK4K as any plugins using        "
-    " // autocmd for BufReadPre might have conflicts with Source Explorer. e.g.    "
-    " // YCM, Syntastic etc.                                                       "
-    let g:SrcExpl_nestedAutoCmd = 1
-    " // Do not let the Source Explorer update the tags file when opening          "
-    let g:SrcExpl_isUpdateTags = 0
-    " // Use program 'ctags' with argument '--sort=foldcase -R' to create or       "
-    " // update a tags file                                                        "
-    " let g:SrcExpl_updateTagsCmd = "ctags --sort=foldcase -R ."
-    " // Set "<F12>" key for updating the tags file artificially                   "
-    " let g:SrcExpl_updateTagsKey = "<F12>"
-    " // Set "<F3>" key for displaying the previous definition in the jump list    "
-    let g:SrcExpl_prevDefKey = "<F3>"
-    " // Set "<F4>" key for displaying the next definition in the jump list        "
-    let g:SrcExpl_nextDefKey = "<F4>"
-
 endfunction " }}}
 
 " Trinity_InitNERDTree() {{{
@@ -187,11 +133,11 @@ function! <SID>Trinity_InitNERDTree()
     " Set the window width
     let g:NERDTreeWinSize = 23
     " Set the window position
-    let g:NERDTreeWinPos = "right"
+    let g:NERDTreeWinPos = "left"
     " Auto centre
     let g:NERDTreeAutoCenter = 0
     " Not Highlight the cursor line
-    let g:NERDTreeHighlightCursorline = 0
+    let g:NERDTreeHighlightCursorline = 1
 
 endfunction " }}}
 
@@ -288,12 +234,6 @@ function! <SID>Trinity_UpdateWindow()
                     break
                 endif
             endwhile
-        endif
-
-        if l:source_explorer_winnr > 0
-            silent! exe l:source_explorer_winnr . "wincmd " . "w"
-            silent! exe "wincmd " . "J"
-            silent! exe g:SrcExpl_winHeight . " wincmd " . "_"
         endif
 
         let l:rtn = <SID>Trinity_GetEditWin()
@@ -481,10 +421,6 @@ function! <SID>Trinity_Toggle()
             SrcExplClose
             let s:source_explorer_switch = 0
         endif
-        if s:nerd_tree_switch == 1
-            NERDTreeClose
-            let s:nerd_tree_switch = 0
-        endif
         let s:Trinity_switch = 0
         let s:Trinity_tabPage = 0
     else
@@ -494,9 +430,6 @@ function! <SID>Trinity_Toggle()
         call <SID>Trinity_InitSourceExplorer()
         SrcExpl
         let s:source_explorer_switch = 1
-        call <SID>Trinity_InitNERDTree()
-        NERDTree
-        let s:nerd_tree_switch = 1
         let s:Trinity_switch = 1
     endif
 
